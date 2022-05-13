@@ -1,0 +1,9 @@
+{
+    "search.exclude": {
+        "out": true
+    },
+    "typescript.tsc.autoDetect": "off",
+    "editor.formatOnSave": true,
+    "typescript.format.enable": true,
+    "files.insertFinalNewline": true
+}

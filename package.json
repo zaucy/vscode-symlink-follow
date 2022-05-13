@@ -1,0 +1,60 @@
+{
+	"name": "symlink-follow",
+	"displayName": "Symlink Follow",
+	"description": "Follow symlink when opening files in VSCode",
+	"version": "1.0.0",
+	"engines": {
+		"vscode": "^1.67.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [],
+		"configuration": {
+			"properties": {
+				"symlink-follow.autoFollow": {
+					"description": "When enabled the 'Follow Symlink' modal no longer pops up and instead the symlink will be followed automatically.",
+					"default": false,
+					"type": "boolean",
+					"order": 0
+				},
+				"symlink-follow.showFileInExplorerAfterSymlinkFollow": {
+					"description": "After symlink follow occurs show file in explorer view.",
+					"default": false,
+					"type": "boolean",
+					"order": 1
+				},
+				"symlink-follow.onlyFollowWithinWorkspace": {
+					"description": "Only follow symlinks if the real path is within the workspace folder(s)",
+					"default": true,
+					"type": "boolean",
+					"order": 2
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"lint": "eslint src --ext ts"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.67.0",
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.1.1",
+		"@types/node": "14.x",
+		"@typescript-eslint/eslint-plugin": "^5.21.0",
+		"@typescript-eslint/parser": "^5.21.0",
+		"eslint": "^8.14.0",
+		"glob": "^8.0.1",
+		"mocha": "^9.2.2",
+		"typescript": "^4.6.4",
+		"@vscode/test-electron": "^2.1.3"
+	}
+}
