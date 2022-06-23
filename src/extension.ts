@@ -14,6 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		// get current selection
 		const targetSelection = selection.selections[0];
+		const targetScroll = vscode.window.activeTextEditor?.visibleRanges[0];
 
 		fs.realpath(filePath, async (err, realFilePath) => {
 			if (err) {
@@ -47,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
 				const newEditor = vscode.window.activeTextEditor;
 				if (newEditor) {
 					newEditor.selection = targetSelection;
-					newEditor.revealRange(new vscode.Range(targetSelection.active, targetSelection.active), vscode.TextEditorRevealType.AtTop);
+					newEditor.revealRange(targetScroll ?? new vscode.Range(targetSelection.active, targetSelection.active), vscode.TextEditorRevealType.AtTop);
 				}
 
 				if (showFileInExplorer) {
