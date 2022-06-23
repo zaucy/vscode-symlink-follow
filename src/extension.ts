@@ -12,10 +12,6 @@ export function activate(context: vscode.ExtensionContext) {
 		// Skipping the file we just opened.
 		if (filePath === lastRealFilePath) return;
 
-		// get current selection
-		const targetSelection = selection.selections[0];
-		const targetScroll = vscode.window.activeTextEditor?.visibleRanges[0];
-
 		fs.realpath(filePath, async (err, realFilePath) => {
 			if (err) {
 				// No need to burden user with error
@@ -36,6 +32,10 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 			}
 
+			// get current selection and scroll position
+			const targetSelection = selection.selections[0];
+			const targetScrollTop = editor.visibleRanges[0]?.start ?? targetSelection.active;
+
 			const showFileInExplorer = symlinkFollowConfig.get('showFileInExplorerAfterSymlinkFollow');
 			const followSymlink = async () => {
 				lastRealFilePath = realFilePath;
@@ -44,11 +44,11 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				await vscode.commands.executeCommand('vscode.open', realFileUri);
 
-				// set selection
+				// apply selection and scroll position
 				const newEditor = vscode.window.activeTextEditor;
 				if (newEditor) {
 					newEditor.selection = targetSelection;
-					newEditor.revealRange(targetScroll ?? new vscode.Range(targetSelection.active, targetSelection.active), vscode.TextEditorRevealType.AtTop);
+					newEditor.revealRange(new vscode.Range(targetScrollTop, targetScrollTop), vscode.TextEditorRevealType.AtTop);
 				}
 
 				if (showFileInExplorer) {
