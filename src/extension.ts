@@ -47,6 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
 				const newEditor = vscode.window.activeTextEditor;
 				if (newEditor) {
 					newEditor.selection = targetSelection;
+					newEditor.revealRange(new vscode.Range(targetSelection.active, targetSelection.active), vscode.TextEditorRevealType.AtTop);
 				}
 
 				if (showFileInExplorer) {
