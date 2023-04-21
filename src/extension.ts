@@ -3,6 +3,7 @@ import * as fs from 'fs';
 
 export function activate(context: vscode.ExtensionContext) {
 	let lastRealFilePath = '';
+	let lastFilePath = '';
 
 	const disposable = vscode.window.onDidChangeActiveTextEditor(async ed => {
 		if (!ed || ed.document.uri.scheme !== 'file') return;
@@ -30,11 +31,12 @@ export function activate(context: vscode.ExtensionContext) {
 					return;
 				}
 			}
+			let isSymlink = vscode.window.activeTextEditor?.document.fileName == filePath
 
 			const showFileInExplorer = symlinkFollowConfig.get('showFileInExplorerAfterSymlinkFollow');
 			const followSymlink = async () => {
 				lastRealFilePath = realFilePath;
-				if (vscode.window.activeTextEditor?.document.fileName == filePath) {
+				if (isSymlink) {
 					vscode.commands.executeCommand('workbench.action.closeActiveEditor');
 				}
 				await vscode.commands.executeCommand('vscode.open', realFileUri);
@@ -55,10 +57,16 @@ export function activate(context: vscode.ExtensionContext) {
 					followSymlink();
 				}
 			} else {
-				followSymlink();
+				let isSameAsLastPath = lastRealFilePath == realFilePath;
+
+				// this is to honor workbench.action.navigateBack AKA mouse back AKA the "Go Back" command
+				let isNavigatingFromRealFileToSymlink = !(isSameAsLastPath && isSymlink && lastFilePath != realFilePath);
+				if (isNavigatingFromRealFileToSymlink) {
+					followSymlink();
+				}
 			}
 		});
-
+		lastFilePath = filePath;
 	});
 
 	context.subscriptions.push(disposable);
