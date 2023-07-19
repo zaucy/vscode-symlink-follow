@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 1.0.3 - 2023-07-19
+#### Miscellaneous Chores
+- cog pre bump hooks - (662fa29) - Ezekiel Warren
+
+- - -
+
 ## 1.0.2 - 2023-07-19
 #### Bug Fixes
 - Go back action (#8) - (ee50020) - vient

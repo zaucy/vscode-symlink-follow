@@ -2,7 +2,7 @@
 	"name": "symlink-follow",
 	"displayName": "Symlink Follow",
 	"description": "Follow symlink when opening files in VSCode",
-	"version": "1.0.1",
+	"version": "1.0.3",
 	"publisher": "zaucy",
 	"repository": "https://github.com/zaucy/vscode-symlink-follow",
 	"engines": {
