@@ -21,8 +21,15 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 
-			// Not a symlink. No need to open real path.
 			if (filePath === realFilePath) {
+				// Not a symlink. No need to open real path.
+				lastRealFilePath = realFilePath;
+				return;
+			}
+			if (lastRealFilePath === realFilePath) {
+				// We are in symlink that points to previously opened file - we got here by "Go Back", do it once again
+				vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+				vscode.commands.executeCommand('workbench.action.navigateBack');
 				return;
 			}
 
