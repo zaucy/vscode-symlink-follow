@@ -1,8 +1,14 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as util from 'util';
+
+function keyFromFsStats(stats?: fs.Stats): number[] {
+	return [stats?.ino ?? NaN, stats?.dev ?? NaN];
+}
 
 export function activate(context: vscode.ExtensionContext) {
 	let lastRealFilePath = '';
+	let lastRealFilePathFsKey: number[] = keyFromFsStats();
 
 	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(async (editor: vscode.TextEditor | undefined) => {
 		if (!editor || editor.document.uri.scheme !== 'file') {
@@ -22,11 +28,16 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 
 			if (filePath === realFilePath) {
-				// Not a symlink. No need to open real path.
+				// Not a symlink, just save file info.
 				lastRealFilePath = realFilePath;
+				fs.stat(realFilePath, { bigint: false }, async (err, stats) => {
+					lastRealFilePathFsKey = keyFromFsStats(err ? undefined : stats);
+				});
 				return;
 			}
-			if (lastRealFilePath === realFilePath) {
+
+			let realFileFsKey = keyFromFsStats(await util.promisify(fs.stat)(realFilePath, { bigint: false }));
+			if (realFileFsKey.every((value, index) => lastRealFilePathFsKey[index] === value)) {
 				// We are in symlink that points to previously opened file - we got here by "Go Back", do it once again
 				vscode.commands.executeCommand('workbench.action.closeActiveEditor');
 				vscode.commands.executeCommand('workbench.action.navigateBack');
@@ -52,6 +63,8 @@ export function activate(context: vscode.ExtensionContext) {
 			const showFileInExplorer = symlinkFollowConfig.get('showFileInExplorerAfterSymlinkFollow');
 			const followSymlink = async () => {
 				lastRealFilePath = realFilePath;
+				lastRealFilePathFsKey = realFileFsKey;
+
 				if (vscode.window.activeTextEditor?.document.fileName === filePath) {
 					vscode.commands.executeCommand('workbench.action.closeActiveEditor');
 				}
