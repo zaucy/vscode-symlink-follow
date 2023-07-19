@@ -1,3 +1,8 @@
+pre_bump_hooks = [
+	"npm run compile",
+	"npm version {{version}} --no-git-tag-version",
+]
+
 post_bump_hooks = [
 	"git push",
 	"git push origin {{version}}",
