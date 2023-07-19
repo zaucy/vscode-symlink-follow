@@ -1,0 +1,7 @@
+post_bump_hooks = [
+	"git push",
+	"git push origin {{version}}",
+	"gh release create {{version}} --generate-notes --latest -t {{version}} --verify-tag",
+	"vsce package",
+	"gh release upload {{version}} symlink-follow-{{version}}.vsix",
+]
