@@ -9,5 +9,5 @@ post_bump_hooks = [
 	"gh release create {{version}} --generate-notes --latest -t {{version}} --verify-tag",
 	"vsce package",
 	"gh release upload {{version}} symlink-follow-{{version}}.vsix",
-	"vsce publish -i symlink-follow-{{version}}.vsix {{version}}",
+	"vsce publish -i {{version}}",
 ]
